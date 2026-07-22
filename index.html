@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<!-- saved from url=(0062)blob:https://www.kimi.com/17d96e10-2e66-4de8-a478-4e80aa17073c -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>💕 我们的约会计划</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&amp;display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #ffeef8 0%, #ffd6e7 30%, #ffc2d6 60%, #ffb3c6 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+    .container {
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+    }
+    .page {
+      display: none;
+      animation: fadeInUp 0.6s ease;
+      position: relative;
+    }
+    .page.active { display: block; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+      20%, 40%, 60%, 80% { transform: translateX(8px); }
+    }
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.1); }
+      50% { transform: scale(1); }
+      75% { transform: scale(1.05); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes sparkle {
+      0%, 100% { opacity: 0; transform: scale(0); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+    .card {
+      background: rgba(255,255,255,0.92);
+      border-radius: 28px;
+      padding: 32px 24px;
+      box-shadow: 0 8px 32px rgba(255, 105, 180, 0.15), 0 2px 8px rgba(0,0,0,0.05);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 180px; height: 180px;
+      background: radial-gradient(circle, rgba(255,182,193,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 140px; height: 140px;
+      background: radial-gradient(circle, rgba(255,192,203,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .emoji-big { font-size: 64px; margin-bottom: 16px; display: block; animation: float 3s ease-in-out infinite; }
+    .emoji-med { font-size: 48px; margin-bottom: 12px; display: block; }
+    h1 { color: #d63384; font-size: 24px; margin-bottom: 12px; position: relative; z-index: 1; }
+    h2 { color: #c2185b; font-size: 20px; margin-bottom: 12px; position: relative; z-index: 1; }
+    p { color: #ad1457; font-size: 15px; line-height: 1.6; margin-bottom: 24px; position: relative; z-index: 1; }
+    .btn-group { display: flex; flex-direction: column; gap: 12px; position: relative; z-index: 1; }
+    .btn {
+      padding: 16px 24px;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #ff6b9d, #c44569);
+      color: white;
+      box-shadow: 0 4px 16px rgba(196, 69, 105, 0.3);
+    }
+    .btn-primary:hover, .btn-primary:active {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 24px rgba(196, 69, 105, 0.4);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.8);
+      color: #c2185b;
+      border: 2px solid #ff8fab;
+    }
+    .btn-secondary:hover, .btn-secondary:active {
+      background: #ff8fab;
+      color: white;
+      transform: translateY(-2px);
+    }
+    .btn.shake { animation: shake 0.5s ease; }
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .option-card {
+      background: rgba(255,240,245,0.8);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 16px 8px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .option-card:hover, .option-card:active {
+      border-color: #ff8fab;
+      background: rgba(255,182,193,0.2);
+      transform: scale(1.03);
+    }
+    .option-card.selected {
+      border-color: #ff6b9d;
+      background: linear-gradient(135deg, rgba(255,107,157,0.15), rgba(196,69,105,0.1));
+      box-shadow: 0 4px 12px rgba(255,107,157,0.2);
+    }
+    .option-card .opt-emoji { font-size: 32px; display: block; margin-bottom: 6px; }
+    .option-card .opt-text { font-size: 13px; color: #880e4f; font-weight: 500; }
+    .progress-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,107,157,0.3);
+      transition: all 0.3s ease;
+    }
+    .dot.active { background: #ff6b9d; width: 24px; border-radius: 4px; }
+    .textarea-input {
+      width: 100%;
+      min-height: 100px;
+      border: 2px solid #ffc2d6;
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 14px;
+      resize: vertical;
+      outline: none;
+      font-family: inherit;
+      background: rgba(255,255,255,0.8);
+      color: #880e4f;
+      position: relative;
+      z-index: 1;
+    }
+    .textarea-input:focus { border-color: #ff6b9d; }
+    .textarea-input::placeholder { color: #d48ba0; }
+    .result-summary {
+      text-align: left;
+      margin: 20px 0;
+      position: relative;
+      z-index: 1;
+    }
+    .result-item {
+      background: linear-gradient(135deg, #fff0f5, #ffe4ec);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin: 8px 0;
+      font-size: 14px;
+      color: #880e4f;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      border-left: 3px solid #ff6b9d;
+    }
+    .result-item .label { font-weight: 700; color: #c2185b; min-width: 70px; }
+    .nav-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    .nav-btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 14px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .nav-btn.back {
+      background: rgba(255,255,255,0.7);
+      color: #c2185b;
+      border: 1.5px solid #ffc2d6;
+    }
+    .nav-btn.next {
+      background: linear-gradient(135deg, #ff6b9d, #c44569);
+      color: white;
+      flex: 1;
+    }
+    .heart-float {
+      position: fixed;
+      font-size: 20px;
+      pointer-events: none;
+      animation: floatUp 3s ease-in forwards;
+      z-index: 9999;
+    }
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-200px) scale(1.5); }
+    }
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: #333;
+      color: white;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 10000;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+    .copy-btn {
+      margin-top: 16px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, #ff6b9d, #c44569);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 16px rgba(196, 69, 105, 0.3);
+      transition: all 0.2s;
+      position: relative;
+      z-index: 1;
+    }
+    .copy-btn:active { transform: scale(0.97); }
+    .taunt-text {
+      color: #ff6b9d;
+      font-size: 18px;
+      font-weight: 700;
+      margin: 16px 0;
+      animation: heartbeat 1s ease;
+    }
+    @media (max-width: 400px) {
+      .card { padding: 24px 16px; border-radius: 24px; }
+      h1 { font-size: 22px; }
+      .emoji-big { font-size: 52px; }
+      .options-grid { gap: 8px; }
+      .option-card { padding: 12px 6px; }
+      .option-card .opt-emoji { font-size: 28px; }
+    }
+  </style>
+<!--<base target="_blank">--><base href="." target="_blank">
+</head>
+<body>
+  <div class="container">
+
+    <!-- ========== 页面 0：开场 ========== -->
+    <div class="page active" data-page="0">
+      <div class="card">
+        <span class="emoji-big">💌</span>
+        <h1>要不要跟我开始一场约会？</h1>
+        <p>我认真准备了很久，想跟你一起度过一段特别的时光～</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="goToPage(1)">好呀好呀！💕</button>
+          <button class="btn btn-secondary" id="noBtn" onclick="handleNo()">不要 🙅</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 页面 0.5：调皮拒绝 ========== -->
+    <div class="page" data-page="0.5">
+      <div class="card">
+        <span class="emoji-big">😏</span>
+        <h1>其实你没有选择</h1>
+        <p class="taunt-text">我就要跟你约会！</p>
+        <p>逃不掉的，乖乖跟我走吧～</p>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="goToPage(1)">好吧好吧～ 🥰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 页面 1：礼物 ========== -->
+    <div class="page" data-page="1">
+      <div class="progress-dots">
+        <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="card">
+        <span class="emoji-med">🎁</span>
+        <h2>见面想要收到什么礼物呢？</h2>
+        <p>选一个你最喜欢的，我会偷偷准备～</p>
+        <div class="options-grid">
+          <div class="option-card" data-value="一束鲜花" onclick="selectSingle(this, &#39;gift&#39;)">
+            <span class="opt-emoji">💐</span>
+            <span class="opt-text">一束鲜花</span>
+          </div>
+          <div class="option-card" data-value="小蛋糕/甜品" onclick="selectSingle(this, &#39;gift&#39;)">
+            <span class="opt-emoji">🍰</span>
+            <span class="opt-text">小蛋糕/甜品</span>
+          </div>
+          <div class="option-card" data-value="可爱玩偶" onclick="selectSingle(this, &#39;gift&#39;)">
+            <span class="opt-emoji">🧸</span>
+            <span class="opt-text">可爱玩偶</span>
+          </div>
+          <div class="option-card" data-value="手写情书" onclick="selectSingle(this, &#39;gift&#39;)">
+            <span class="opt-emoji">💌</span>
+            <span class="opt-text">手写情书</span>
+          </div>
+          <div class="option-card" data-value="奶茶/咖啡" onclick="selectSingle(this, &#39;gift&#39;)">
+            <span class="opt-emoji">🧋</span>
+            <span class="opt-text">奶茶/咖啡</span>
+          </div>
+          <div class="option-card" data-value="惊喜盲盒" onclick="selectSingle(this, &#39;gift&#39;)">
+            <span class="opt-emoji">🎀</span>
+            <span class="opt-text">惊喜盲盒</span>
+          </div>
+        </div>
+        <div class="nav-row">
+          <button class="nav-btn back" onclick="goToPage(0)">←</button>
+          <button class="nav-btn next" onclick="nextWithCheck(&#39;gift&#39;, 2)">下一步 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 页面 2：约会地点 ========== -->
+    <div class="page" data-page="2">
+      <div class="progress-dots">
+        <div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="card">
+        <span class="emoji-med">📍</span>
+        <h2>最想去的约会地点？</h2>
+        <p>带我去你喜欢的地方，或者一起去探索新的地方～</p>
+        <div class="options-grid">
+          <div class="option-card" data-value="博物馆" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">🏛️</span>
+            <span class="opt-text">博物馆</span>
+          </div>
+          <div class="option-card" data-value="拼豆" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">🧩</span>
+            <span class="opt-text">拼豆</span>
+          </div>
+          <div class="option-card" data-value="商城闲逛" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">🛍️</span>
+            <span class="opt-text">商城闲逛</span>
+          </div>
+          <div class="option-card" data-value="KTV" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">🎤</span>
+            <span class="opt-text">KTV</span>
+          </div>
+          <div class="option-card" data-value="呆家里打游戏" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">🎮</span>
+            <span class="opt-text">呆家里打游戏</span>
+          </div>
+          <div class="option-card" data-value="出去骑行" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">🚴</span>
+            <span class="opt-text">出去骑行</span>
+          </div>
+          <div class="option-card" data-value="手工体验" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">✂️</span>
+            <span class="opt-text">手工体验</span>
+          </div>
+          <div class="option-card" data-value="公园散步" onclick="selectSingle(this, &#39;place&#39;)">
+            <span class="opt-emoji">🌳</span>
+            <span class="opt-text">公园散步</span>
+          </div>
+        </div>
+        <div class="nav-row">
+          <button class="nav-btn back" onclick="goToPage(1)">←</button>
+          <button class="nav-btn next" onclick="nextWithCheck(&#39;place&#39;, 3)">下一步 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 页面 3：吃什么 ========== -->
+    <div class="page" data-page="3">
+      <div class="progress-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="card">
+        <span class="emoji-med">🍽️</span>
+        <h2>第一次约会想吃什么呢？</h2>
+        <p>填饱肚子才有力气谈恋爱呀～</p>
+        <div class="options-grid">
+          <div class="option-card" data-value="火锅" onclick="selectSingle(this, &#39;food&#39;)">
+            <span class="opt-emoji">🍲</span>
+            <span class="opt-text">火锅</span>
+          </div>
+          <div class="option-card" data-value="烧鸡" onclick="selectSingle(this, &#39;food&#39;)">
+            <span class="opt-emoji">🍗</span>
+            <span class="opt-text">烧鸡</span>
+          </div>
+          <div class="option-card" data-value="烧烤" onclick="selectSingle(this, &#39;food&#39;)">
+            <span class="opt-emoji">🍢</span>
+            <span class="opt-text">烧烤</span>
+          </div>
+          <div class="option-card" data-value="粤菜馆子" onclick="selectSingle(this, &#39;food&#39;)">
+            <span class="opt-emoji">🥟</span>
+            <span class="opt-text">粤菜馆子</span>
+          </div>
+          <div class="option-card" data-value="湘菜馆子" onclick="selectSingle(this, &#39;food&#39;)">
+            <span class="opt-emoji">🌶️</span>
+            <span class="opt-text">湘菜馆子</span>
+          </div>
+          <div class="option-card" data-value="啥都想尝尝捏" onclick="selectSingle(this, &#39;food&#39;)">
+            <span class="opt-emoji">😋</span>
+            <span class="opt-text">啥都想尝尝捏</span>
+          </div>
+        </div>
+        <div class="nav-row">
+          <button class="nav-btn back" onclick="goToPage(2)">←</button>
+          <button class="nav-btn next" onclick="nextWithCheck(&#39;food&#39;, 4)">下一步 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 页面 4：约会氛围 ========== -->
+    <div class="page" data-page="4">
+      <div class="progress-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div>
+      </div>
+      <div class="card">
+        <span class="emoji-med">✨</span>
+        <h2>希望约会是什么氛围？</h2>
+        <p>告诉我你当下的心情，我来配合你～</p>
+        <div class="options-grid">
+          <div class="option-card" data-value="浪漫心动" onclick="selectSingle(this, &#39;vibe&#39;)">
+            <span class="opt-emoji">💕</span>
+            <span class="opt-text">浪漫心动</span>
+          </div>
+          <div class="option-card" data-value="轻松愉快" onclick="selectSingle(this, &#39;vibe&#39;)">
+            <span class="opt-emoji">😄</span>
+            <span class="opt-text">轻松愉快</span>
+          </div>
+          <div class="option-card" data-value="搞怪有趣" onclick="selectSingle(this, &#39;vibe&#39;)">
+            <span class="opt-emoji">🤪</span>
+            <span class="opt-text">搞怪有趣</span>
+          </div>
+          <div class="option-card" data-value="安静治愈" onclick="selectSingle(this, &#39;vibe&#39;)">
+            <span class="opt-emoji">🧸</span>
+            <span class="opt-text">安静治愈</span>
+          </div>
+        </div>
+        <div class="nav-row">
+          <button class="nav-btn back" onclick="goToPage(3)">←</button>
+          <button class="nav-btn next" onclick="nextWithCheck(&#39;vibe&#39;, 5)">下一步 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 页面 5：想对我说的话 ========== -->
+    <div class="page" data-page="5">
+      <div class="progress-dots">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div>
+      </div>
+      <div class="card">
+        <span class="emoji-med">💭</span>
+        <h2>期待我们的约会吗？</h2>
+        <p>有什么想对我说的，或者对这次约会的期待，都可以写下来～</p>
+        <textarea class="textarea-input" id="messageInput" placeholder="比如：好期待呀！想跟你一起吃好吃的、玩好玩的...
+或者有什么小要求也可以写在这里～"></textarea>
+        <div class="nav-row">
+          <button class="nav-btn back" onclick="goToPage(4)">←</button>
+          <button class="nav-btn next" onclick="finish()">完成 ✨</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 页面 6：结果页 ========== -->
+    <div class="page" data-page="6">
+      <div class="card">
+        <span class="emoji-big">🥰</span>
+        <h1>收到！约会计划生成中...</h1>
+        <p>我已经把你的所有小心愿都记下来啦，接下来交给我安排！</p>
+        <div class="result-summary" id="resultSummary"></div>
+        <button class="copy-btn" onclick="copyResult()">📋 复制结果发给 TA</button>
+        <p style="color:#c2185b; font-size:13px; margin-top:16px;">💌 也可以直接截图保存哦～</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const answers = { gift: '', place: '', food: '', vibe: '', message: '' };
+    let currentPage = 0;
+
+    function goToPage(n) {
+      document.querySelector('.page.active').classList.remove('active');
+      document.querySelector('.page[data-page="' + n + '"]').classList.add('active');
+      currentPage = n;
+      window.scrollTo(0, 0);
+    }
+
+    function handleNo() {
+      const btn = document.getElementById('noBtn');
+      btn.classList.add('shake');
+      setTimeout(() => {
+        btn.classList.remove('shake');
+        goToPage(0.5);
+      }, 500);
+    }
+
+    function selectSingle(el, key) {
+      const parent = el.closest('.options-grid');
+      parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+      el.classList.add('selected');
+      answers[key] = el.dataset.value;
+      createHeart(el);
+    }
+
+    function createHeart(el) {
+      const heart = document.createElement('div');
+      heart.className = 'heart-float';
+      heart.textContent = '💖';
+      const rect = el.getBoundingClientRect();
+      heart.style.left = (rect.left + rect.width/2 - 10) + 'px';
+      heart.style.top = (rect.top - 20) + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 3000);
+    }
+
+    function nextWithCheck(key, nextPage) {
+      if (!answers[key]) {
+        showToast('先选一个吧～');
+        return;
+      }
+      goToPage(nextPage);
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2000);
+    }
+
+    function finish() {
+      answers.message = document.getElementById('messageInput').value.trim();
+      goToPage(6);
+      const summary = document.getElementById('resultSummary');
+      summary.innerHTML = `
+        <div class="result-item"><span class="label">🎁 礼物：</span>${answers.gift}</div>
+        <div class="result-item"><span class="label">📍 地点：</span>${answers.place}</div>
+        <div class="result-item"><span class="label">🍽️ 美食：</span>${answers.food}</div>
+        <div class="result-item"><span class="label">✨ 氛围：</span>${answers.vibe}</div>
+        ${answers.message ? '<div class="result-item"><span class="label">💭 留言：</span>' + answers.message + '</div>' : ''}
+      `;
+    }
+
+    function copyResult() {
+      const text = `💕 约会计划收集结果 💕\n\n` +
+        `🎁 礼物：${answers.gift}\n` +
+        `📍 地点：${answers.place}\n` +
+        `🍽️ 美食：${answers.food}\n` +
+        `✨ 氛围：${answers.vibe}\n` +
+        `${answers.message ? '💭 留言：' + answers.message + '\n' : ''}\n` +
+        `—— 来自「我们的约会计划」💌`;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => showToast('已复制！快发给 TA 吧～'));
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('已复制！快发给 TA 吧～');
+      }
+    }
+  </script>
+
+</body></html>
